@@ -1,4 +1,4 @@
-package jumpup.imi.fb4.htw.de.jumpupandorid;
+package jumpup.imi.fb4.htw.de.jumpupandroid;
 
 import org.junit.Test;
 
