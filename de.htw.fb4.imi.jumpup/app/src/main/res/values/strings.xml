@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">JumpUpAndroid</string>
+    <string name="action_settings">Settings</string>
+    <string name="fragment_main_title">JumpUp.Me - Carpooling</string>
+    <string name="fragment_main_introduction_text">Enter your trips\nFind trips of other users,
+        combine and book them</string>
+    <string name="fragment_main_email">eMail</string>
+    <string name="fragment_main_login">Login</string>
+    <string name="fragment_main_register">Register</string>
+</resources>
