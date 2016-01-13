@@ -3,6 +3,8 @@ package jumpup.imi.fb4.htw.de.jumpupandroid.login;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import jumpup.imi.fb4.htw.de.jumpupandroid.entities.User;
+
 /**
  * Project: jumpup_android
  *
@@ -16,6 +18,7 @@ import android.util.Log;
 public class LoginTask extends AsyncTask<String, Void, Void> {
     private static final String TAG = LoginTask.class.getName();
 
+    private LoginRequest loginRequest = new LoginRequest();
     private boolean hasError = false;
     private String username;
     private String password;
@@ -47,6 +50,6 @@ public class LoginTask extends AsyncTask<String, Void, Void> {
     }
 
     private void triggerLoginByHttpRequest() {
-
+        User user = loginRequest.triggerLogin(this.username, this.password);
     }
 }

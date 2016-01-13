@@ -1,5 +1,14 @@
 package jumpup.imi.fb4.htw.de.jumpupandroid.util.webservice;
 
+import android.util.Base64;
+import android.util.Log;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import jumpup.imi.fb4.htw.de.jumpupandroid.BuildConfig;
+
 /**
  * Project: jumpup_android
  * <p/>
@@ -9,26 +18,38 @@ package jumpup.imi.fb4.htw.de.jumpupandroid.util.webservice;
  * @since ${date}
  */
 public abstract class JumpUpRequest {
+    private static final String BASE_URL = BuildConfig.JUMPUP_REST_BASE_URL;
+    private static final String TAG = JumpUpRequest.class.getName();
     private String builtUrl;
+    private String username;
+    private String password;
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     /**
      * Get the targeted version URL part. E.g. "v1.0.0".
      * @return
      */
-    public abstract String getTargetVersion();
+    protected abstract String getTargetVersion();
 
     /**
      * Get the endpoint URL part of the targeted service. E.g. "user".
      * @return
      */
-    public abstract String getEndpointUrl();
+    protected abstract String getEndpointUrl();
 
     /**
      * Check whether this action is public (does not need an authentication).
      * This means, the service will be available under a "public" URL part. E.G. http://groupelite.de:8080/jumpup/rest/v1.0.0/public/user/1.
      * @return
      */
-    public abstract boolean isPublicAction();
+    protected abstract boolean isPublicAction();
 
     /**
      * Get the base URL to the JumpUp REST service.
@@ -37,8 +58,7 @@ public abstract class JumpUpRequest {
      */
     public String getBaseUrl()
     {
-        // TODO get from build config.
-        return "http://groupelite.de:8080/jumpup/rest";
+        return BASE_URL;
     }
 
     /**
@@ -65,4 +85,31 @@ public abstract class JumpUpRequest {
 
         return "";
     }
+
+    protected HttpURLConnection buildConnection(URL url, String requestMethod) throws IOException {
+        Log.v(TAG, "buildConnection(): will connect to URL " + url );
+
+        HttpURLConnection urlConnection;
+        urlConnection = (HttpURLConnection) url.openConnection();
+        urlConnection.setRequestMethod(requestMethod);
+
+        if (!this.isPublicAction()) {
+            this.addAuthorizationHeader(urlConnection);
+        }
+
+        return urlConnection;
+    }
+
+    private void addAuthorizationHeader(HttpURLConnection urlConnection) {
+        if (null == this.username || null == this.password) {
+            throw new IllegalArgumentException("addAuthorizationHeader(): no public action, but you didn't set any username and/or password.");
+        }
+
+        byte[] encodedBase64 = Base64.encode((this.username + ":" + this.password).getBytes(), Base64.DEFAULT);
+        String strEncodedBase64 = new String(encodedBase64);
+
+        urlConnection.setRequestProperty("Authorization", "Basic " + strEncodedBase64);
+    }
+
+
 }

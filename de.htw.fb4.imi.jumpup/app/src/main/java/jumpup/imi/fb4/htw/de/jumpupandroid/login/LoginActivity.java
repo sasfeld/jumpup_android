@@ -11,6 +11,8 @@ public class LoginActivity extends ActionBarActivity {
     public static final String EXTRA_USERNAME = "username";
     public static final String EXTRA_PASSWORD = "password";
 
+    private LoginTask loginTask = new LoginTask();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +27,6 @@ public class LoginActivity extends ActionBarActivity {
 
         Toast.makeText(LoginActivity.this, "Logging in " + eMail, Toast.LENGTH_SHORT).show();
 
-        // TODO handle in asynchronous job
+        loginTask.execute(eMail, password);
     }
 }
