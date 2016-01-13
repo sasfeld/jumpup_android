@@ -8,6 +8,9 @@
     <string name="fragment_main_login">Login</string>
     <string name="fragment_main_register">Register</string>
     <string name="title_activity_login">Sign in</string>
+    <string name="action_map_test">Map test</string>
+
+
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
