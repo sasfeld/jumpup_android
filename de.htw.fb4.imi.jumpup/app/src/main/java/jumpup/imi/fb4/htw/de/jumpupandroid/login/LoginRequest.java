@@ -4,14 +4,17 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import org.apache.http.protocol.HTTP;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import jumpup.imi.fb4.htw.de.jumpupandroid.entities.User;
+import jumpup.imi.fb4.htw.de.jumpupandroid.entity.User;
+import jumpup.imi.fb4.htw.de.jumpupandroid.entity.mapper.JsonMapper;
+import jumpup.imi.fb4.htw.de.jumpupandroid.entity.mapper.MapperFactory;
 import jumpup.imi.fb4.htw.de.jumpupandroid.util.webservice.Endpoints;
 import jumpup.imi.fb4.htw.de.jumpupandroid.util.webservice.JumpUpRequest;
 import jumpup.imi.fb4.htw.de.jumpupandroid.util.webservice.ResponseReader;
@@ -45,11 +48,16 @@ public class LoginRequest extends JumpUpRequest {
         return ENDPOINT;
     }
 
+    @Override
+    protected JsonMapper getResponseMapper() {
+        return MapperFactory.newUserMapper();
+    }
+
     /**
      * Trigger the login.
      * @param username the username
      * @param password the password
-     * @return User or null
+     * @return UserMapper or null on connection or response handling errors
      */
     @Nullable
     public User triggerLogin(String username, String password) {
@@ -69,14 +77,16 @@ public class LoginRequest extends JumpUpRequest {
                 String response = ResponseReader.read(urlConnection);
 
                 Log.d(TAG, "triggerLogin(): got response: " + response);
-            } catch (IOException connectionException) {
-                Log.e(TAG, "triggerLogin(): could not login user. Exception: " + connectionException.getMessage());
+                return (User) mapResponse(response);
+            } catch (IOException | JSONException connectionException) {
+                Log.e(TAG, "triggerLogin(): could not login user. Exception: " + connectionException.getMessage()
+                + "\nStack trace:\n" + ExceptionUtils.getStackTrace(connectionException));
                 return null;
             } finally {
                 if (null != urlConnection) {  try { urlConnection.disconnect(); } catch (Exception e2) { /* ignore */ } }
             }
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            Log.e(TAG, "triggerLogin(): could not login user. Exception: " + e.getMessage());
         }
 
         return null;

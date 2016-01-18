@@ -1,4 +1,4 @@
-package jumpup.imi.fb4.htw.de.jumpupandroid.entities;
+package jumpup.imi.fb4.htw.de.jumpupandroid;
 
 /**
  * Project: jumpup_android
@@ -6,7 +6,7 @@ package jumpup.imi.fb4.htw.de.jumpupandroid.entities;
  * [short_description]
  *
  * @author Sascha Feldmann <a href="mailto:sascha.feldmann@gmx.de">sascha.feldmann@gmx.de</a>
- * @since ${date}
+ * @since 18.01.2016
  */
-public class User {
+public abstract class BaseTest {
 }

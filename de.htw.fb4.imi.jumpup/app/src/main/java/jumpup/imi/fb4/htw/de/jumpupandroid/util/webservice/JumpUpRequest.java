@@ -3,11 +3,15 @@ package jumpup.imi.fb4.htw.de.jumpupandroid.util.webservice;
 import android.util.Base64;
 import android.util.Log;
 
+import org.json.JSONException;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 import jumpup.imi.fb4.htw.de.jumpupandroid.BuildConfig;
+import jumpup.imi.fb4.htw.de.jumpupandroid.entity.AbstractEntity;
+import jumpup.imi.fb4.htw.de.jumpupandroid.entity.mapper.JsonMapper;
 
 /**
  * Project: jumpup_android
@@ -50,6 +54,12 @@ public abstract class JumpUpRequest {
      * @return
      */
     protected abstract boolean isPublicAction();
+
+    /**
+     * Get the mapper object which is responsible for creating an AbstractEntity by a given raw String response.
+     * @return
+     */
+    protected abstract JsonMapper getResponseMapper();
 
     /**
      * Get the base URL to the JumpUp REST service.
@@ -108,8 +118,16 @@ public abstract class JumpUpRequest {
         byte[] encodedBase64 = Base64.encode((this.username + ":" + this.password).getBytes(), Base64.DEFAULT);
         String strEncodedBase64 = new String(encodedBase64);
 
-        urlConnection.setRequestProperty("Authorization", "Basic " + strEncodedBase64);
+        String authorizationHeader = "Basic " + strEncodedBase64;
+        Log.d(TAG, "addAuthorizationHeader(): will add Authorization header: " + authorizationHeader);
+        urlConnection.setRequestProperty("Authorization", authorizationHeader);
     }
 
+    protected AbstractEntity mapResponse(String rawResponse) throws JSONException {
+        if (null == this.getResponseMapper()) {
+            throw new NullPointerException("mapResponse(): getResponseMapper() returns null. Please implement the method and make sure to return a JsonMapepr instance.");
+        }
 
+        return this.getResponseMapper().mapResponse(rawResponse);
+    }
 }

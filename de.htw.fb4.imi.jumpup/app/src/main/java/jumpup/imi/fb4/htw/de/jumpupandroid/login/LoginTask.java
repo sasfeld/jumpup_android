@@ -3,7 +3,7 @@ package jumpup.imi.fb4.htw.de.jumpupandroid.login;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import jumpup.imi.fb4.htw.de.jumpupandroid.entities.User;
+import jumpup.imi.fb4.htw.de.jumpupandroid.entity.User;
 
 /**
  * Project: jumpup_android
@@ -51,5 +51,7 @@ public class LoginTask extends AsyncTask<String, Void, Void> {
 
     private void triggerLoginByHttpRequest() {
         User user = loginRequest.triggerLogin(this.username, this.password);
+
+        Log.v(TAG, "triggerLoginByHttpRequest(): successfully received user: " + user);
     }
 }
